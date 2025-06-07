@@ -143,8 +143,8 @@ export default function Home() {
   const width = window.innerWidth
 
   return (
-    <main style={{ backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem' }}>
-      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', width: '100%',  ...(width > 400 ? { paddingLeft: '33%', paddingRight: '33%'} : {})  }}>
+    <main style={{ display:'block',backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem', justifyContent: 'center' }}>
+      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', maxWidth:'500px'  }}>
           <div>
             <h1 style={{ textAlign: 'center' }}>BIRD BIRD !?</h1>
           </div>
