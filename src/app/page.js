@@ -144,7 +144,7 @@ export default function Home() {
 
   return (
     <main style={{ backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem' }}>
-      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', width: '100%',  ...(width > 500 ? { paddingLeft: '33%', paddingRight: '33%'} : {})  }}>
+      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', width: '100%',  ...(width > 400 ? { paddingLeft: '33%', paddingRight: '33%'} : {})  }}>
           <div>
             <h1 style={{ textAlign: 'center' }}>BIRD BIRD !?</h1>
           </div>
