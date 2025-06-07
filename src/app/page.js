@@ -5,8 +5,8 @@ import * as XLSX from 'xlsx';
 
 const difficultyLevels = {
   1: ["Common name"],
-  2: ["Common name", "Wingspan"],
-  3: ["Common name", "Wingspan", "Scientific name"],
+  2: ["Common name", "Victory points"],
+  3: ["Common name", "Victory points", "Scientific name"],
 };
 
 function shuffle(array) {
@@ -26,7 +26,7 @@ function getOptions(data, field, correctValue) {
 
 function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
   return (
-    <div style={{maxWidth: 400, margin: '2rem auto', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
+    <div style={{maxWidth: 400, marginTop:'2rem', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
       <img 
         src={`/images/${correctItem["Common name"].trim().toLowerCase().replace(/ /g, '_')}/000001.jpg`} 
         alt={correctItem["Common name"]} 
@@ -65,6 +65,49 @@ function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
   );
 }
 
+function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = (timeLeft / totalTime) * circumference;
+
+  return (
+    <svg width={size} height={size}>
+      <circle
+        stroke="#555"
+        fill="none"
+        strokeWidth={strokeWidth}
+        r={radius}
+        cx={size / 2}
+        cy={size / 2}
+      />
+      <circle
+        stroke="orange"
+        fill="none"
+        strokeWidth={strokeWidth}
+        strokeDasharray={circumference}
+        strokeDashoffset={circumference - progress}
+        strokeLinecap="round"
+        r={radius}
+        cx={size / 2}
+        cy={size / 2}
+        style={{ transition: 'stroke-dashoffset 1s linear' }}
+      />
+      <text
+        x="50%"
+        y="50%"
+        dy="0.3em"
+        textAnchor="middle"
+        fill="#eee"
+        fontSize="1.2em"
+        fontFamily="Arial, sans-serif"
+      >
+        {timeLeft}s
+      </text>
+    </svg>
+  );
+}
+
+
 export default function Home() {
   const [data, setData] = useState(null);
   const [shuffledData, setShuffledData] = useState(null);
@@ -85,7 +128,7 @@ export default function Home() {
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-        const filtered = jsonData.filter(row => row["Common name"] && row["Wingspan"] && row["Scientific name"]);
+        const filtered = jsonData.filter(row => row["Common name"] && row["Victory points"] && row["Scientific name"]);
         setData(filtered);
         setShuffledData(shuffle(filtered)); // Shuffle once
       } catch (error) {
@@ -94,6 +137,34 @@ export default function Home() {
     }
     loadExcel();
   }, []);
+
+  const ROUND_TIME_SECONDS = 15; // 15 seconds per round
+  const [timeLeft, setTimeLeft] = useState(ROUND_TIME_SECONDS);
+
+  useEffect(() => {
+  if (!correctItem) return;
+
+  setTimeLeft(ROUND_TIME_SECONDS);
+
+  const timerId = setInterval(() => {
+    setTimeLeft(prev => {
+      if (prev <= 1) {
+        clearInterval(timerId);
+        handleTimeout();
+        return 0;
+      }
+      return prev - 1;
+  });
+  }, 1000);
+
+  return () => clearInterval(timerId);
+  }, [correctItem]);
+
+  function handleTimeout() {
+  setMessage(`Time's up! The correct answers were:\n${difficultyLevels[difficulty].map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
+  setScore(0);
+  setTimeout(() => startNewRound(), 3000);
+  }
 
   useEffect(() => {
     if (shuffledData) startNewRound();
@@ -143,7 +214,7 @@ export default function Home() {
   const width = window.innerWidth
 
   return (
-    <main style={{ display:'block',backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem', justifyContent: 'center' }}>
+    <main style={{ display:'grid',alignItems:'start',backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem', justifyContent: 'center' }}>
       <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', maxWidth:'500px'  }}>
           <div>
             <h1 style={{ textAlign: 'center' }}>BIRD BIRD !?</h1>
@@ -158,13 +229,16 @@ export default function Home() {
                 style={{ fontSize: '1rem', padding: '0.2rem', borderRadius: '0.2rem', maxWidth:'80%'}}
               >
                 <option value={1}>Level 1 (Common Name)</option>
-                <option value={2}>Level 2 (Common Name + Wingspan)</option>
-                <option value={3}>Level 3 (Common Name + Wingspan + Scientific Name)</option>
+                <option value={2}>Level 2 (Common Name + Victory points)</option>
+                <option value={3}>Level 3 (Common Name + Victory points + Scientific Name)</option>
               </select>
           </div>
-          <div style={{ textAlign: 'left', fontSize: '1.25rem' }}>
+          <div style={{padding:'1rem', wordWrap:'break-word'}}>
             {message && <p>{message}</p>}
+          </div>
+          <div style={{display:'flex',justifyContent:'space-between', fontSize: '1.25rem' }}>
             <p><b>Score: {score}</b></p>
+            <CircularTimer timeLeft={timeLeft} totalTime={ROUND_TIME_SECONDS} />
           </div>
           <Question correctItem={correctItem} optionsByField={optionsByField} selectedAnswers={selectedAnswers} onSelect={handleSelect} />
       </div>
