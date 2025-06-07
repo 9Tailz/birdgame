@@ -215,7 +215,7 @@ export default function Home() {
 
   return (
     <main style={{ display:'grid',alignItems:'start',backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem', justifyContent: 'center' }}>
-      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', maxWidth:'500px'  }}>
+      <div className='ANEWDIV'>
           <div>
             <h1 style={{ textAlign: 'center' }}>BIRD BIRD !?</h1>
           </div>
@@ -233,12 +233,16 @@ export default function Home() {
                 <option value={3}>Level 3 (Common Name + Victory points + Scientific Name)</option>
               </select>
           </div>
-          <div style={{padding:'1rem', wordWrap:'break-word'}}>
+          <div id='message'>
             {message && <p>{message}</p>}
           </div>
-          <div style={{display:'flex',justifyContent:'space-between', fontSize: '1.25rem' }}>
-            <p><b>Score: {score}</b></p>
-            <CircularTimer timeLeft={timeLeft} totalTime={ROUND_TIME_SECONDS} />
+          <div id='roundinfo'>
+            <div>
+              <p><b>Score: {score}</b></p>
+            </div>
+            <div>
+              <CircularTimer timeLeft={timeLeft} totalTime={ROUND_TIME_SECONDS} />
+            </div>
           </div>
           <Question correctItem={correctItem} optionsByField={optionsByField} selectedAnswers={selectedAnswers} onSelect={handleSelect} />
       </div>
