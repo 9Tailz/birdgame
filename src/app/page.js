@@ -26,7 +26,7 @@ function getOptions(data, field, correctValue) {
 
 function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
+    <div style={{maxWidth: 400, margin: '2rem auto', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
       <img 
         src={`/images/${correctItem["Common name"].trim().toLowerCase().replace(/ /g, '_')}/000001.jpg`} 
         alt={correctItem["Common name"]} 
@@ -35,7 +35,7 @@ function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
       />
       {Object.entries(optionsByField).map(([field, options], sectionIndex) => (
         <div key={sectionIndex}>
-          <p><strong>{field}</strong></p>
+          <p style={{paddingBottom: '0.5rem', paddingTop: '1.5rem'}}><strong>{String(field).toUpperCase()}</strong></p>
           <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
             {options.map((value, idx) => {
               const isSelected = selectedAnswers[field] === value;
@@ -49,6 +49,8 @@ function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
                   marginBottom: '0.5rem', 
                   padding: '0.5rem', 
                   borderRadius: '6px',
+                  paddingTop: '0.5rem',
+                  paddingBottom: '0.5rem'
                   // color: isSelected ? '#fff' : '#eee', 
                 }}
               >
@@ -138,30 +140,33 @@ export default function Home() {
 
   if (!correctItem || !optionsByField) return <div style={{textAlign: 'center', marginTop: '2rem'}}>Loading game...</div>;
 
+  const width = window.innerWidth
+
   return (
     <main style={{ backgroundColor: '#121212', minHeight: '100vh', color: '#eee', padding: '1rem' }}>
-      <h1 style={{ textAlign: 'center' }}>Bird Quiz Game</h1>
-
-      <div style={{ maxWidth: 400, margin: '0 auto 1rem' }}>
-        <label>
-          Difficulty:&nbsp;
-          <select
-            value={difficulty}
-            onChange={e => setDifficulty(Number(e.target.value))}
-            style={{ fontSize: '1rem' }}
-          >
-            <option value={1}>Level 1 (Common Name)</option>
-            <option value={2}>Level 2 (Common Name + Wingspan)</option>
-            <option value={3}>Level 3 (Common Name + Wingspan + Scientific Name)</option>
-          </select>
-        </label>
-      </div>
-
-      <Question correctItem={correctItem} optionsByField={optionsByField} selectedAnswers={selectedAnswers} onSelect={handleSelect} />
-
-      <div style={{ textAlign: 'center', fontSize: '1.25rem' }}>
-        {message && <p>{message}</p>}
-        <p>Score: {score}</p>
+      <div className='ANEWDIV' style={{display: 'flex', flexDirection:  'column',  justifyContent: 'center', width: '100%',  ...(width > 500 ? { paddingLeft: '33%', paddingRight: '33%'} : {})  }}>
+          <div>
+            <h1 style={{ textAlign: 'center' }}>BIRD BIRD !?</h1>
+          </div>
+            <div style={{display: 'flex', flexDirection: 'column', flexWrap: 'wrap', maxWidth: '100%', paddingBottom: '1rem' }}>
+            <label style={{paddingBottom: '0.5rem'}}>
+              Difficulty:&nbsp;
+            </label>
+              <select
+                value={difficulty}
+                onChange={e => setDifficulty(Number(e.target.value))}
+                style={{ fontSize: '1rem', padding: '0.2rem', borderRadius: '0.2rem', maxWidth:'80%'}}
+              >
+                <option value={1}>Level 1 (Common Name)</option>
+                <option value={2}>Level 2 (Common Name + Wingspan)</option>
+                <option value={3}>Level 3 (Common Name + Wingspan + Scientific Name)</option>
+              </select>
+          </div>
+          <div style={{ textAlign: 'left', fontSize: '1.25rem' }}>
+            {message && <p>{message}</p>}
+            <p><b>Score: {score}</b></p>
+          </div>
+          <Question correctItem={correctItem} optionsByField={optionsByField} selectedAnswers={selectedAnswers} onSelect={handleSelect} />
       </div>
     </main>
   );
