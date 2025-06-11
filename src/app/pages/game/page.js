@@ -259,7 +259,7 @@ export default function Home() {
                 <option value={2}>Level 2 (Common Name + Victory points)</option>
                 <option value={3}>Level 3 (Common Name + Victory points + Scientific Name)</option>
               </select>
-              <button onClick={ () => console.log(Game)}>'LOG GAME MODE'</button>
+              <button onClick={ () => console.log(Game)}>LOG GAME MODE</button>
           </div>
           <div className={styles.message}>
             {message && <p>{message}</p>}
