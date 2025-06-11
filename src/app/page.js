@@ -26,6 +26,8 @@ export default function MainMenu() {
     console.log('gamemode Index:', item.id)
   } 
 
+//Passing URL DATA
+
 function startgame() {
   const urlString = new URLSearchParams(gamemode).toString();
   console.log('sending:', urlString)

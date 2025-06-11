@@ -124,6 +124,7 @@ export default function Home() {
   const router = useRouter();
 
 
+// READING URL DATA
 
   const Game = () => {
     console.log('function starts')
