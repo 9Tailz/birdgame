@@ -31,7 +31,7 @@ export default function MainMenu() {
 function startgame() {
   const urlString = new URLSearchParams(gamemode).toString();
   console.log('sending:', urlString)
-  router.push(`/pages/game?${urlString}`)
+  router.push(`/game?${urlString}`)
 }
 
 

@@ -5,7 +5,7 @@ import * as XLSX from 'xlsx';
 import styles from './page.module.css'
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-
+import { Question } from '../components/comp_questioncard';
 
 const difficultyLevels = {
   1: ["Common name"],
@@ -28,46 +28,20 @@ function getOptions(data, field, correctValue) {
   return shuffle([correctValue, ...wrongOptions]);
 }
 
-function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
-  return (
-    <div style={{maxWidth: 400, marginTop:'2rem', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
-      <img 
-        src={`/images/${correctItem["Common name"].trim().toLowerCase().replace(/ /g, '_')}/000001.jpg`} 
-        alt={correctItem["Common name"]} 
-        style={{ width: '100%', height: 'auto', borderRadius: '10px', marginBottom: '1rem' }}
-        onError={(e) => e.target.src = 'https://placecats.com//1080/2400'}
-      />
-      {Object.entries(optionsByField).map(([field, options], sectionIndex) => (
-        <div key={sectionIndex}>
-          <p style={{paddingBottom: '0.5rem', paddingTop: '1.5rem'}}><strong>{String(field).toUpperCase()}</strong></p>
-          <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-            {options.map((value, idx) => {
-              const isSelected = selectedAnswers[field] === value;
-              return (
-              <li 
-                key={idx} 
-                onClick={() => onSelect(field, value)} 
-                style={{ 
-                  cursor: 'pointer', 
-                  backgroundColor: isSelected ? '#905f38' : '#444', 
-                  marginBottom: '0.5rem', 
-                  padding: '0.5rem', 
-                  borderRadius: '6px',
-                  paddingTop: '0.5rem',
-                  paddingBottom: '0.5rem'
-                  // color: isSelected ? '#fff' : '#eee', 
-                }}
-              >
-                {value}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
+
+  const Game = () => {
+  const router = useRouter();
+  const [gamemode, setGamemode] = useState(null);
+
+  useEffect(() => {
+    if (router.query.gamemode) {
+      setGamemode(router.query.gamemode);
+      console.log(`Gamemode is: ${router.query.gamemode}`);
+    }
+  }, [router.query.gamemode,timervisable]);
+
+  return (gamemode);
+};
 
 function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
   const radius = (size - strokeWidth) / 2;
@@ -112,6 +86,8 @@ function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
 }
 
 
+
+
 export default function Home() {
   const [data, setData] = useState(null);
   const [shuffledData, setShuffledData] = useState(null);
@@ -121,28 +97,6 @@ export default function Home() {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState(null);
-  const router = useRouter();
-
-
-// READING URL DATA
-
-  const Game = () => {
-    console.log('function starts')
-    const { gamemode } = router.query
-    const [mode, setmode] = useState(null);
-
-    useEffect(() => {
-      console.log('useEffect hit')
-      
-      if  (gamemode) {
-        setmode(mode);
-        console.log('FOUDNDATA:', Game);
-      } else { console.log('No data found')}
-    }, [gamemode]);
-    return null
-  };
-
-
 
   useEffect(() => {
     async function loadExcel() {
@@ -164,32 +118,39 @@ export default function Home() {
     loadExcel();
   }, []);
 
-  const ROUND_TIME_SECONDS = 15; // 15 seconds per round
-  const [timeLeft, setTimeLeft] = useState(ROUND_TIME_SECONDS);
+
+
+  const RoundTime = 15; 
+  const [timeLeft, setTimeLeft] = useState(RoundTime);
+  const [timervisable, settimervisable] = useState(true)
 
   useEffect(() => {
-  if (!correctItem) return;
+    if (timervisable) {
+          if (!correctItem) return;
+      
+          setTimeLeft(RoundTime);
+      
+          const timerId = setInterval(() => {
+            setTimeLeft(prev => {
+              if (prev <= 1) {
+                clearInterval(timerId);
+                handleTimeout();
+                return 0;
+              }
+              return prev - 1;
+          });
+          }, 1000);
+      
+          return () => clearInterval(timerId);
+    }
+    }, [correctItem,timervisable]);
 
-  setTimeLeft(ROUND_TIME_SECONDS);
 
-  const timerId = setInterval(() => {
-    setTimeLeft(prev => {
-      if (prev <= 1) {
-        clearInterval(timerId);
-        handleTimeout();
-        return 0;
-      }
-      return prev - 1;
-  });
-  }, 1000);
-
-  return () => clearInterval(timerId);
-  }, [correctItem]);
 
   function handleTimeout() {
-  setMessage(`Time's up! The correct answers were:\n${difficultyLevels[difficulty].map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
-  setScore(0);
-  setTimeout(() => startNewRound(), 3000);
+    setMessage(`Time's up! The correct answers were:\n${difficultyLevels[difficulty].map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
+    setScore(0);
+    setTimeout(() => startNewRound(), 3000);
   }
 
   useEffect(() => {
@@ -210,30 +171,26 @@ export default function Home() {
   }
 
   function handleSelect(field, selectedValue) {
-  const newSelections = { ...selectedAnswers, [field]: selectedValue };
-  setSelectedAnswers(newSelections);
+    const newSelections = { ...selectedAnswers, [field]: selectedValue };
+    setSelectedAnswers(newSelections);
 
-  const allFields = difficultyLevels[difficulty];
-  const allAnswered = allFields.every(f => newSelections[f]);
+    const allFields = difficultyLevels[difficulty];
+    const allAnswered = allFields.every(f => newSelections[f]);
 
-  if (allAnswered) {
-    const anyWrong = allFields.some(f => newSelections[f] !== correctItem[f]);
+    if (allAnswered) {
+      const anyWrong = allFields.some(f => newSelections[f] !== correctItem[f]);
 
-    if (anyWrong) {
-      setMessage(`Wrong! Starting over. The correct answers were:\n${allFields.map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
-      setScore(0);
-      setTimeout(() => {
-        startNewRound();
-      }, 1500);
-    } else {
-      setMessage("Correct! 🎉");
-      setScore(prev => prev + 1);
-      setTimeout(() => {
-        startNewRound();
-      }, 1000);
+      if (anyWrong) {
+        setMessage(`Wrong! Starting over. The correct answers were:\n${allFields.map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
+        setScore(0);
+        setTimeout(() => {startNewRound();}, 1500);
+      } else {
+        setMessage("Correct! 🎉");
+        setScore(prev => prev + 1);
+        setTimeout(() => {startNewRound();}, 1000);
+      }
     }
   }
-}
 
   if (!correctItem || !optionsByField) return <div style={{textAlign: 'center', marginTop: '2rem'}}>Loading game...</div>;
 
@@ -259,7 +216,8 @@ export default function Home() {
                 <option value={2}>Level 2 (Common Name + Victory points)</option>
                 <option value={3}>Level 3 (Common Name + Victory points + Scientific Name)</option>
               </select>
-              <button onClick={ () => console.log(Game)}>LOG GAME MODE</button>
+              <button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button>
+              <button onClick={ () => console.log(gamemode)}>LOG GAME MODE</button>
           </div>
           <div className={styles.message}>
             {message && <p>{message}</p>}
@@ -269,10 +227,19 @@ export default function Home() {
               <p><b>Score: {score}</b></p>
             </div>
             <div>
-              <CircularTimer timeLeft={timeLeft} totalTime={ROUND_TIME_SECONDS} />
+              {timervisable  && (
+                <CircularTimer
+                timeLeft={timeLeft}
+                totalTime={RoundTime}
+                />
+              )}
             </div>
           </div>
-          <Question correctItem={correctItem} optionsByField={optionsByField} selectedAnswers={selectedAnswers} onSelect={handleSelect} />
+          <Question
+          correctItem={correctItem}
+          optionsByField={optionsByField}
+          selectedAnswers={selectedAnswers}
+          onSelect={handleSelect}/>
       </div>
     </main>
   );

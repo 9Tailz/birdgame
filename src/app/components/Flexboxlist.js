@@ -1,4 +1,6 @@
-import styles from './Flexboxlist.module.css'
+'use  client';
+
+import styles from './components.module.css'
 import { useState } from 'react';
 
 
