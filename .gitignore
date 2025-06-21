@@ -19,7 +19,6 @@
 
 # production
 /build
-/src/app/test/
 
 # misc
 .DS_Store
