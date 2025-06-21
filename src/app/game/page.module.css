@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   max-width: fit-content;
   gap: 10px;
 }
@@ -50,9 +51,15 @@
 
 .ANEWDIV .roundinfo {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-grow: 3;
-  justify-content: space-evenly;
+  align-items: center;
+}
+
+.ANEWDIV .roundinfo svg {
+  /* border: solid; */
+  margin-bottom: -100;
+  margin-top: -50;
 }
 
 
@@ -72,6 +79,8 @@
   flex-direction: column;
   gap: 32px;
   grid-row-start: 2;
+  align-items: center;
+  justify-content: center;
   
 }
 

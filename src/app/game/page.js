@@ -43,47 +43,98 @@ function getOptions(data, field, correctValue) {
   return (gamemode);
 };
 
-function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const progress = (timeLeft / totalTime) * circumference;
 
-  return (
-    <svg width={size} height={size}>
-      <circle
+function LineTimer({size, strokeWidth=8, timeleft, totaltime}) {
+
+    // console.log('props:', { size, strokeWidth, timeleft, totaltime });
+    const progress = (timeleft / totaltime) * size;
+
+    return(
+        <svg width={size*2} height={size}>
+        <line
+        x1= {size - size}
+        y1= {size / 2}
+        x2= {size * 2}
+        y2= {size / 2}
+        strokeWidth={strokeWidth}
         stroke="#555"
-        fill="none"
-        strokeWidth={strokeWidth}
-        r={radius}
-        cx={size / 2}
-        cy={size / 2}
-      />
-      <circle
-        stroke="orange"
-        fill="none"
-        strokeWidth={strokeWidth}
-        strokeDasharray={circumference}
-        strokeDashoffset={circumference - progress}
         strokeLinecap="round"
-        r={radius}
-        cx={size / 2}
-        cy={size / 2}
+        />
+        <line
+        x1= '50%'
+        y1= {size / 2}
+        x2= '100%'
+        y2= {size / 2}
+        strokeWidth={strokeWidth}
+        stroke="orange"
+        strokeDasharray={size}
+        strokeDashoffset={size - progress }
         style={{ transition: 'stroke-dashoffset 1s linear' }}
-      />
-      <text
-        x="50%"
-        y="50%"
-        dy="0.3em"
-        textAnchor="middle"
-        fill="#eee"
-        fontSize="1.2em"
-        fontFamily="Arial, sans-serif"
-      >
-        {timeLeft}s
-      </text>
+        strokeLinecap="round"
+        />
+        <line
+        x2= {size - size}
+        y2= {size / 2}
+        x1= '50%'
+        y1= {size / 2}
+        strokeWidth={strokeWidth}
+        stroke="orange"
+        strokeDasharray={size}
+        strokeDashoffset={size - progress}
+        style={{ transition: 'stroke-dashoffset 1s linear' }}
+        strokeLinecap="round"
+        />
+        <text
+        x='50%'
+        y='40%'
+        fill="#fff"
+        >
+        {timeleft}s
+        </text>
     </svg>
-  );
+    )
 }
+// function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
+//   const radius = (size - strokeWidth) / 2;
+//   const circumference = 2 * Math.PI * radius;
+//   const progress = (timeLeft / totalTime) * circumference;
+
+//   return (
+//     <svg width={size} height={size}>
+//       <circle
+//         stroke="#555"
+//         fill="none"
+//         strokeWidth={strokeWidth}
+//         r={radius}
+//         cx={size / 2}
+//         cy={size / 2}
+//       />
+//       <circle
+//         stroke="orange"
+//         fill="none"
+//         strokeWidth={strokeWidth}
+//         strokeDasharray={circumference}
+//         strokeDashoffset={circumference - progress}
+//         strokeLinecap="round"
+//         r={radius}
+//         cx={size / 2}
+//         cy={size / 2}
+//         style={{ transition: 'stroke-dashoffset 1s linear' }}
+//       />
+//       <text
+//         x="50%"
+//         y="50%"
+//         dy="0.3em"
+//         textAnchor="middle"
+//         fill="#eee"
+//         fontSize="1.2em"
+//         fontFamily="Arial, sans-serif"
+//       >
+//         {timeLeft}s
+//       </text>
+//     </svg>
+//   );
+// }
 
 
 
@@ -120,7 +171,8 @@ export default function Home() {
 
 
 
-  const RoundTime = 15; 
+  const RoundTime = 15;
+  const svgsize = 200;
   const [timeLeft, setTimeLeft] = useState(RoundTime);
   const [timervisable, settimervisable] = useState(true)
 
@@ -131,7 +183,7 @@ export default function Home() {
           setTimeLeft(RoundTime);
       
           const timerId = setInterval(() => {
-            setTimeLeft(prev => {
+            setTimeLeft((prev) => {
               if (prev <= 1) {
                 clearInterval(timerId);
                 handleTimeout();
@@ -228,9 +280,10 @@ export default function Home() {
             </div>
             <div>
               {timervisable  && (
-                <CircularTimer
-                timeLeft={timeLeft}
-                totalTime={RoundTime}
+                <LineTimer
+                timeleft={timeLeft}
+                totaltime={RoundTime}
+                size={svgsize}
                 />
               )}
             </div>

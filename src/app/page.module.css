@@ -8,7 +8,13 @@
     border: solid;
     padding: 20;
     height: 100%;
-    background-color: rgba(1, 43, 1, 0.774);
+    background-color:#c299ff;
+    background-image:
+    radial-gradient(at 85% 51%, hsla(90,60%,79%,1) 0px, transparent 50%),
+    radial-gradient(at 61% 41%, hsla(163,74%,64%,1) 0px, transparent 50%),
+    radial-gradient(at 14% 51%, hsla(122,94%,71%,1) 0px, transparent 50%),
+    radial-gradient(at 3% 73%, hsla(131,93%,66%,1) 0px, transparent 50%),
+    radial-gradient(at 52% 29%, hsla(210,73%,65%,1) 0px, transparent 50%)
 }
 
 
@@ -16,6 +22,7 @@
     border: solid;
     padding: 20;
     border-radius: 10;
+    
 
 }
 
@@ -25,6 +32,7 @@
     text-align: center;
     word-wrap: normal;
     padding: 20px;
-    border-radius: 20px;
+    border-radius: 20px
     
 }
+

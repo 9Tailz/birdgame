@@ -14,6 +14,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  height: 100%;
 }
 
 body {
@@ -28,6 +29,8 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  /* border: solid; */
+  
 }
 
 a {
@@ -41,3 +44,4 @@ a {
   }
 }
 
+/* css pallet: https://coolors.co/bffff1-7cffcb-74f2ce-379634-0a3200 */

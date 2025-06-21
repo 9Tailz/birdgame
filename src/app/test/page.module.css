@@ -1,0 +1,81 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+
+export default function CountdownPage() {
+  const TOTAL_SECONDS = 10;
+  const radius = 90;
+  const circumference = 2 * Math.PI * radius;
+
+  const [remaining, setRemaining] = useState(TOTAL_SECONDS);
+  const circleRef = useRef(null);
+
+  useEffect(() => {
+    if (remaining === 0) return;
+
+    const timer = setTimeout(() => {
+      setRemaining((prev) => prev - 1);
+    }, 1000);
+
+    const offset = circumference * (remaining / TOTAL_SECONDS);
+    if (circleRef.current) {
+      circleRef.current.style.strokeDashoffset = offset;
+    }
+
+    return () => clearTimeout(timer);
+  }, [remaining]);
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.countdown}>{remaining}</div>
+      <svg style={styles.svg}>
+        <circle
+          cx="100"
+          cy="100"
+          r={radius}
+          strokeWidth="10"
+          fill="none"
+          stroke="#444"
+        />
+        <circle
+          ref={circleRef}
+          cx="100"
+          cy="100"
+          r={radius}
+          strokeWidth="10"
+          fill="none"
+          stroke="#00ffff"
+          style={{
+            strokeDasharray: circumference,
+            strokeDashoffset: 0,
+            transition: 'stroke-dashoffset 1s linear',
+          }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+const styles = {
+  container: {
+    background: '#111',
+    color: '#fff',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    fontFamily: 'sans-serif',
+    position: 'relative',
+  },
+  countdown: {
+    position: 'absolute',
+    fontSize: '2rem',
+    zIndex: 1,
+  },
+  svg: {
+    transform: 'rotate(-90deg)',
+    width: 200,
+    height: 200,
+  },
+};
