@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import styles from  './components.module.css'
+import Image from 'next/image';
 
 
 
-export function Question({ correctItem, optionsByField, selectedAnswers, onSelect }) {
+
+
+export function Question({ correctItem, optionsByField, selectedAnswers, onSelect, imgindex }) {
+
+
   return (
     <div style={{ maxWidth: 400, marginTop: '2rem', textAlign: 'center', border: '2px solid #ccc', borderRadius: '10px', padding: '1rem', background: '#222', color: '#eee', fontFamily: 'Arial' }}>
-      <img
-        src={`/images/${correctItem["Common name"].trim().toLowerCase().replace(/ /g, '_')}/000001.jpg`}
+      <Image
+        src={`/images/${correctItem["Common name"].trim().toLowerCase().replace(/ /g, '_')}/00000${imgindex}.jpg`}
         alt={correctItem["Common name"]}
+        fill={false}
+        width= '550'
+        height='1280'
+        loading={'eager'}
         style={{ width: '100%', height: 'auto', borderRadius: '10px', marginBottom: '1rem' }}
         onError={(e) => e.target.src = 'https://placecats.com//1080/2400'} />
       {Object.entries(optionsByField).map(([field, options], sectionIndex) => (

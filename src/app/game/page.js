@@ -44,6 +44,7 @@ function getOptions(data, field, correctValue) {
 };
 
 
+
 function LineTimer({size, strokeWidth=8, timeleft, totaltime}) {
 
     // console.log('props:', { size, strokeWidth, timeleft, totaltime });
@@ -137,6 +138,13 @@ function LineTimer({size, strokeWidth=8, timeleft, totaltime}) {
 // }
 
 
+  function getImageName (min=1, max=5) {
+    // console.log('Function called')
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+  }
+
 
 
 export default function Home() {
@@ -148,6 +156,7 @@ export default function Home() {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState(null);
+  const [imageindex,setImageIndex] = useState(null)
 
   useEffect(() => {
     async function loadExcel() {
@@ -213,6 +222,8 @@ export default function Home() {
     const newItem = getNewCorrectItem(shuffledData);
     setCorrectItem(newItem);
     setSelectedAnswers({});
+    setImageIndex(getImageName)
+    console.log(imageindex)
     const fields = difficultyLevels[difficulty];
     const fieldOptions = {};
     fields.forEach(field => {
@@ -255,7 +266,7 @@ export default function Home() {
             <h1 style={{ textAlign: 'center'}}>BIRD BIRD !?</h1>
             <h2>The origonal wing-bird quiz game</h2>
           </div>
-            <div style={{display: 'flex', flexDirection: 'column', flexWrap: 'wrap', maxWidth: '100%', paddingBottom: '1rem' }}>
+            {/* <div style={{display: 'flex', flexDirection: 'column', flexWrap: 'wrap', maxWidth: '100%', paddingBottom: '1rem' }}>
             <label style={{paddingBottom: '0.5rem'}}>
               Difficulty:&nbsp;
             </label>
@@ -270,7 +281,7 @@ export default function Home() {
               </select>
               <button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button>
               <button onClick={ () => console.log(gamemode)}>LOG GAME MODE</button>
-          </div>
+          </div> */}
           <div className={styles.message}>
             {message && <p>{message}</p>}
           </div>
@@ -292,7 +303,8 @@ export default function Home() {
           correctItem={correctItem}
           optionsByField={optionsByField}
           selectedAnswers={selectedAnswers}
-          onSelect={handleSelect}/>
+          onSelect={handleSelect}
+          imgindex={imageindex}/>
       </div>
     </main>
   );
