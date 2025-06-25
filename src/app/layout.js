@@ -3,9 +3,10 @@ import "./globals.css";
 import { Truculenta } from 'next/font/google';
 
 const truculenta = Truculenta({
-  variable: '--font-truclenta',
+  variable: '--font-Truculenta',
+  weight: ['100','400', '600', '900'],
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  display: 'swap'
 });
 
 

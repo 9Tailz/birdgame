@@ -1,0 +1,29 @@
+.list {
+  display: flex;            /* make ul a flex container */
+  flex-wrap: wrap;          /* wrap items to next line */
+  gap: 1rem;                /* space between boxes */
+  margin: 0;                /* reset default ul margin */
+  padding: 0;               /* reset default ul padding */
+  list-style: none;         /* remove bullets */
+}
+
+.item {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+  /* flexible sizing: grow, shrink, base width */
+  flex: 1 1 200px;
+  
+  /* inside the box, you can also use flex for inner layout */
+  display: flex;            
+  flex-direction: column;   
+  justify-content: space-between;
+}
+
+.selected {
+  background: rgb(124, 81, 0) !important;
+}
+
