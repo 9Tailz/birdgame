@@ -276,6 +276,7 @@ export default function Home() {
               <button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button>
               <button onClick={ () => console.log(gamemode)}>LOG GAME MODE</button>
           </div> */}
+          <div><button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button></div>
           <div className={styles.message}>
             {message && <p>{message}</p>}
           </div>
