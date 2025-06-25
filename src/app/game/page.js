@@ -45,39 +45,27 @@ function getOptions(data, field, correctValue) {
 
 
 
-function LineTimer({size, strokeWidth=8, timeleft, totaltime}) {
+function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
 
     // console.log('props:', { size, strokeWidth, timeleft, totaltime });
     const progress = (timeleft / totaltime) * size;
 
     return(
-        <svg width={size*2} height={size}>
+      <svg width={size*2} height={size/2}>
         <line
         x1= {size - size}
-        y1= {size / 2}
+        y1= {size /2}
         x2= {size * 2}
-        y2= {size / 2}
+        y2= {size/2}
         strokeWidth={strokeWidth}
         stroke="#555"
         strokeLinecap="round"
         />
         <line
-        x1= '50%'
-        y1= {size / 2}
-        x2= '100%'
-        y2= {size / 2}
-        strokeWidth={strokeWidth}
-        stroke="orange"
-        strokeDasharray={size}
-        strokeDashoffset={size - progress }
-        style={{ transition: 'stroke-dashoffset 1s linear' }}
-        strokeLinecap="round"
-        />
-        <line
-        x2= {size - size}
-        y2= {size / 2}
-        x1= '50%'
-        y1= {size / 2}
+        x1= {size}
+        y1= {size/2}
+        x2= {size * 2}
+        y2= {size/2}
         strokeWidth={strokeWidth}
         stroke="orange"
         strokeDasharray={size}
@@ -85,13 +73,19 @@ function LineTimer({size, strokeWidth=8, timeleft, totaltime}) {
         style={{ transition: 'stroke-dashoffset 1s linear' }}
         strokeLinecap="round"
         />
-        <text
-        x='50%'
-        y='40%'
-        fill="#fff"
-        >
-        {timeleft}s
-        </text>
+        <line
+        x2= {size - size}
+        y2= {size/2}
+        x1= {size}
+        y1= {size/2}
+        strokeWidth={strokeWidth}
+        stroke="orange"
+        strokeDasharray={size}
+        strokeDashoffset={size - progress}
+        style={{ transition: 'stroke-dashoffset 1s linear' }}
+        strokeLinecap="round"
+        />
+        <text x='50%'y='70%' fill="#fff">{timeleft}s</text>
     </svg>
     )
 }
@@ -156,7 +150,7 @@ export default function Home() {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState(null);
-  const [imageindex,setImageIndex] = useState(null)
+  const [imageindex,setImageIndex] = useState(1)
 
   useEffect(() => {
     async function loadExcel() {
