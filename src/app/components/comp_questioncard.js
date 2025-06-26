@@ -17,6 +17,8 @@ export function Question({ correctItem, optionsByField, selectedAnswers, onSelec
         fill={false}
         width= '550'
         height='1280'
+        priority={true}
+        decoding='async'
         loading={'eager'}
         style={{ width: '100%', height: 'auto', borderRadius: '10px', marginBottom: '1rem' }}
         onError={(e) => e.target.src = 'https://placecats.com//1080/2400'} />
