@@ -29,21 +29,6 @@ function getOptions(data, field, correctValue) {
 }
 
 
-  const Game = () => {
-  const router = useRouter();
-  const [gamemode, setGamemode] = useState(null);
-
-  useEffect(() => {
-    if (router.query.gamemode) {
-      setGamemode(router.query.gamemode);
-      console.log(`Gamemode is: ${router.query.gamemode}`);
-    }
-  }, [router.query.gamemode,timervisable]);
-
-  return (gamemode);
-};
-
-
 
 function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
 
@@ -89,47 +74,7 @@ function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
     </svg>
     )
 }
-// function CircularTimer({ timeLeft, totalTime, size = 80, strokeWidth = 6 }) {
-//   const radius = (size - strokeWidth) / 2;
-//   const circumference = 2 * Math.PI * radius;
-//   const progress = (timeLeft / totalTime) * circumference;
 
-//   return (
-//     <svg width={size} height={size}>
-//       <circle
-//         stroke="#555"
-//         fill="none"
-//         strokeWidth={strokeWidth}
-//         r={radius}
-//         cx={size / 2}
-//         cy={size / 2}
-//       />
-//       <circle
-//         stroke="orange"
-//         fill="none"
-//         strokeWidth={strokeWidth}
-//         strokeDasharray={circumference}
-//         strokeDashoffset={circumference - progress}
-//         strokeLinecap="round"
-//         r={radius}
-//         cx={size / 2}
-//         cy={size / 2}
-//         style={{ transition: 'stroke-dashoffset 1s linear' }}
-//       />
-//       <text
-//         x="50%"
-//         y="50%"
-//         dy="0.3em"
-//         textAnchor="middle"
-//         fill="#eee"
-//         fontSize="1.2em"
-//         fontFamily="Arial, sans-serif"
-//       >
-//         {timeLeft}s
-//       </text>
-//     </svg>
-//   );
-// }
 
 
   function getImageName (min=1, max=5) {
@@ -139,18 +84,32 @@ function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
 
+  function getGameMode() {
+    const searchPrams = useSearchParams();
+    return(searchPrams.get('gamemode'))
 
+  }
+
+
+// ----------------------------- MAIN --------------------------------------------------
 
 export default function Home() {
   const [data, setData] = useState(null);
   const [shuffledData, setShuffledData] = useState(null);
-  const [difficulty, setDifficulty] = useState(1);
+  const [difficulty, setDifficulty] = useState(getGameMode());
   const [correctItem, setCorrectItem] = useState(null);
+  const [correctItem2, setCorrectItem2] = useState(null);
   const [optionsByField, setOptionsByField] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [message, setMessage] = useState(null);
   const [imageindex,setImageIndex] = useState(1)
+
+
+
+
+
+// Load Data From Excel
 
   useEffect(() => {
     async function loadExcel() {
@@ -160,8 +119,7 @@ export default function Home() {
         const workbook = XLSX.read(arrayBuffer, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
+        const jsonData = XLSX.utils.sheet_to_json(worksheet)
         const filtered = jsonData.filter(row => row["Common name"] && row["Victory points"] && row["Scientific name"]);
         setData(filtered);
         setShuffledData(shuffle(filtered)); // Shuffle once
@@ -173,6 +131,8 @@ export default function Home() {
   }, []);
 
 
+
+// Timer --->
 
   const RoundTime = 15;
   const svgsize = 200;
@@ -201,12 +161,15 @@ export default function Home() {
     }, [correctItem,timervisable]);
 
 
-
   function handleTimeout() {
     setMessage(`Time's up! The correct answers were:\n${difficultyLevels[difficulty].map(f => `${f}: ${correctItem[f]}`).join('\n')}`);
     setScore(0);
     setTimeout(() => startNewRound(), 3000);
   }
+
+  // <--- Timer
+
+  // Round Managmentr --->
 
   useEffect(() => {
     if (shuffledData) startNewRound();
@@ -214,7 +177,9 @@ export default function Home() {
 
   function startNewRound() {
     const newItem = getNewCorrectItem(shuffledData);
+    const newItem2 = getNewCorrectItem(shuffledData);
     setCorrectItem(newItem);
+    setCorrectItem2(newItem2);
     setSelectedAnswers({});
     setImageIndex(getImageName)
     console.log(imageindex)
@@ -251,6 +216,9 @@ export default function Home() {
 
   if (!correctItem || !optionsByField) return <div style={{textAlign: 'center', marginTop: '2rem'}}>Loading game...</div>;
 
+
+  // <---  Round Managment
+
   const width = window.innerWidth
 
   return (
@@ -260,23 +228,8 @@ export default function Home() {
             <h1 style={{ textAlign: 'center'}}>BIRD BIRD !?</h1>
             <h2>The origonal wing-bird quiz game</h2>
           </div>
-            {/* <div style={{display: 'flex', flexDirection: 'column', flexWrap: 'wrap', maxWidth: '100%', paddingBottom: '1rem' }}>
-            <label style={{paddingBottom: '0.5rem'}}>
-              Difficulty:&nbsp;
-            </label>
-              <select
-                value={difficulty}
-                onChange={e => setDifficulty(Number(e.target.value))}
-                style={{ fontSize: '1rem', padding: '0.2rem', borderRadius: '0.2rem', maxWidth:'80%'}}
-              >
-                <option value={1}>Level 1 (Common Name)</option>
-                <option value={2}>Level 2 (Common Name + Victory points)</option>
-                <option value={3}>Level 3 (Common Name + Victory points + Scientific Name)</option>
-              </select>
-              <button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button>
-              <button onClick={ () => console.log(gamemode)}>LOG GAME MODE</button>
-          </div> */}
           <div><button onClick={ () => settimervisable(!timervisable)}>Show/Hide  Timer</button></div>
+          {/* <div><button onClick={ () => console.log(difficulty)}>Print URL Prams</button></div> */}
           <div className={styles.message}>
             {message && <p>{message}</p>}
           </div>
@@ -296,6 +249,7 @@ export default function Home() {
           </div>
           <Question
           correctItem={correctItem}
+          correctItem2={correctItem2}
           optionsByField={optionsByField}
           selectedAnswers={selectedAnswers}
           onSelect={handleSelect}

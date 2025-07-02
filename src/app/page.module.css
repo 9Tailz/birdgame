@@ -20,9 +20,14 @@
 
 .MainMenu button {
     border: solid;
-    padding: 20;
-    border-radius: 10;
-    
+    width: 100%;
+    height: 70px;
+    background-color: rgb(47, 200, 16,0.8);
+    font-family: var(--font-Truculenta);
+    font-size: 40;
+    border-radius: 60;
+    margin-top: 30;
+
 
 }
 
@@ -31,8 +36,12 @@
     justify-content: center;
     text-align: center;
     word-wrap: normal;
-    padding: 20px;
-    border-radius: 20px
+    padding: 30px;
+    border-radius:60;
+    height: auto;
     
 }
 
+.flexlist ul {
+    height: 10;
+}
