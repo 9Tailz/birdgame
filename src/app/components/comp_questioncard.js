@@ -4,9 +4,21 @@ import Image from 'next/image';
 
 
 
+  function getImageURL(imageName, index) {
+    const url = `/images/${imageName["Common name"].trim().toLowerCase().replace(/ /g, '_')}/00000${index}.jpg`
+    console.log(url)
+  
+    return(url)
+  }
 
 
-export function Question({ correctItem, optionsByField, selectedAnswers, onSelect, imgindex }) {
+
+
+export function Question({ correctItem, correctItem2, optionsByField, selectedAnswers, onSelect, imgindex }) {
+
+    // const [ImageURL1, setImageURL1] = useState(getImageURL(correctItem, imgindex))
+    // const [ImageURL2, setImageURL2] = useState(getImageURL(correctItem2,imgindex))
+
 
 
   return (
@@ -17,7 +29,8 @@ export function Question({ correctItem, optionsByField, selectedAnswers, onSelec
         fill={false}
         width= '550'
         height='1280'
-        loading={'eager'}
+        priority={true}
+        decoding='async'
         style={{ width: '100%', height: 'auto', borderRadius: '10px', marginBottom: '1rem' }}
         onError={(e) => e.target.src = 'https://placecats.com//1080/2400'} />
       {Object.entries(optionsByField).map(([field, options], sectionIndex) => (
