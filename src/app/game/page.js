@@ -84,11 +84,7 @@ function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
   }
 
-  function getGameMode() {
-    const searchPrams = useSearchParams();
-    return(searchPrams.get('gamemode'))
 
-  }
 
 
 // ----------------------------- MAIN --------------------------------------------------
@@ -96,7 +92,7 @@ function LineTimer({size, strokeWidth=10, timeleft, totaltime}) {
 export default function Home() {
   const [data, setData] = useState(null);
   const [shuffledData, setShuffledData] = useState(null);
-  const [difficulty, setDifficulty] = useState(getGameMode());
+  const [difficulty, setDifficulty ] = useState(1)
   const [correctItem, setCorrectItem] = useState(null);
   const [correctItem2, setCorrectItem2] = useState(null);
   const [optionsByField, setOptionsByField] = useState({});
@@ -106,7 +102,11 @@ export default function Home() {
   const [imageindex,setImageIndex] = useState(1)
 
 
-
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setDifficulty(params.get('gamemode') || '1');
+    console.log(`Gamemode: ${difficulty}`)
+  }, []);
 
 
 // Load Data From Excel
@@ -172,7 +172,8 @@ export default function Home() {
   // Round Managmentr --->
 
   useEffect(() => {
-    if (shuffledData) startNewRound();
+    if (shuffledData) 
+      startNewRound();
   }, [shuffledData, difficulty]);
 
   function startNewRound() {
